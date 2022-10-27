@@ -11,6 +11,7 @@ const contactFindId = nanoid();
 
 export const Filter = () => {
   const dispatch = useDispatch();
+
   const handleChange = event => {
     dispatch(filterContact(event.currentTarget.value));
   };

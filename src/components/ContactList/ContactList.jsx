@@ -1,16 +1,23 @@
 import { useSelector, useDispatch } from 'react-redux';
-import { deleteContact } from '../../redux/slice';
-
+import { deleteContact } from '../../redux/operations';
+import { useEffect } from 'react';
 import {
   ContactListSection,
   ContactListItem,
   DeleteBtn,
 } from './ContactList.styled';
+import { fetchContacts } from '../../redux/operations';
+import { Loader } from '../Loader/Loader';
 
 export const ContactList = () => {
-  const contacts = useSelector(state => state.contacts);
+  const contacts = useSelector(state => state.phonebook.items);
+  const loading = useSelector(state => state.phonebook.isLoading);
+  const error = useSelector(state => state.phonebook.error);
   const filter = useSelector(state => state.filter);
   const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(fetchContacts());
+  }, [dispatch]);
 
   const filterContacts = () => {
     if (!filter) {
@@ -27,21 +34,25 @@ export const ContactList = () => {
   };
 
   return (
-    <ContactListSection>
-      {contacts.length !== 0 &&
-        filterContacts().map(item => (
-          <ContactListItem key={item.id}>
-            {item.name}: {item.number}
-            <DeleteBtn
-              type="button"
-              onClick={() => {
-                dispatch(deleteContact(item.id));
-              }}
-            >
-              Delete
-            </DeleteBtn>
-          </ContactListItem>
-        ))}
-    </ContactListSection>
+    <>
+      {loading && <Loader />}
+      {error && <p>oops, something went wrong</p>}
+      <ContactListSection>
+        {contacts.length !== 0 &&
+          filterContacts().map(item => (
+            <ContactListItem key={item.id}>
+              {item.name}: {item.phone}
+              <DeleteBtn
+                type="button"
+                onClick={() => {
+                  dispatch(deleteContact(item.id));
+                }}
+              >
+                Delete
+              </DeleteBtn>
+            </ContactListItem>
+          ))}
+      </ContactListSection>
+    </>
   );
 };

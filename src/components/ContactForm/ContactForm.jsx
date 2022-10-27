@@ -1,6 +1,6 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { addContact } from '../../redux/slice';
+import { addContact } from '../../redux/operations';
 import { nanoid } from 'nanoid';
 import { Report } from 'notiflix/build/notiflix-report-aio';
 import {
@@ -13,7 +13,7 @@ import {
 
 function PhoneBookForm() {
   const dispatch = useDispatch();
-  const contacts = useSelector(state => state.contacts);
+  const contacts = useSelector(state => state.phonebook.items);
 
   const contactNameId = nanoid();
   const contactTellId = nanoid();
@@ -30,9 +30,8 @@ function PhoneBookForm() {
     event.preventDefault();
     const form = event.target;
     const addName = {
-      id: nanoid(),
       name: form.elements.name.value,
-      number: form.elements.number.value,
+      phone: form.elements.number.value,
     };
     if (findName(form.elements.name.value)) {
       return Report.failure(
