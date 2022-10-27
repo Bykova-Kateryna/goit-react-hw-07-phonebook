@@ -5,6 +5,7 @@ import {
   ContactListSection,
   ContactListItem,
   DeleteBtn,
+  ErrorMesage,
 } from './ContactList.styled';
 import { fetchContacts } from '../../redux/operations';
 import { Loader } from '../Loader/Loader';
@@ -36,7 +37,9 @@ export const ContactList = () => {
   return (
     <>
       {loading && <Loader />}
-      {error && <p>oops, something went wrong</p>}
+      {error && (
+        <ErrorMesage>oops, something went wrong, change the side.</ErrorMesage>
+      )}
       <ContactListSection>
         {contacts.length !== 0 &&
           filterContacts().map(item => (

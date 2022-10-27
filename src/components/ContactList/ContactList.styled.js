@@ -1,4 +1,3 @@
-
 import styled from 'styled-components';
 
 export const ContactListSection = styled.ol`
@@ -24,4 +23,9 @@ export const DeleteBtn = styled.button`
   &:focus {
     background-color: #1d88c5;
   }
+`;
+export const ErrorMesage = styled.p`
+  color: #ff1900;
+  text-transform: uppercase;
+  text-decoration: underline overline #ff3028;
 `;
