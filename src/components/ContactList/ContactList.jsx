@@ -6,9 +6,11 @@ import {
   ContactListItem,
   DeleteBtn,
   ErrorMesage,
+  ContactListItemContext,
 } from './ContactList.styled';
 import { fetchContacts } from '../../redux/operations';
 import { Loader } from '../Loader/Loader';
+import { LoaderFromButtonDelete } from '../Loader/LoaderFromButtonDelete';
 
 export const ContactList = () => {
   const contacts = useSelector(state => state.phonebook.items);
@@ -19,6 +21,8 @@ export const ContactList = () => {
   useEffect(() => {
     dispatch(fetchContacts());
   }, [dispatch]);
+  const actionType = useSelector(state => state.phonebook.actionTypeStatus);
+  console.log(actionType);
 
   const filterContacts = () => {
     if (!filter) {
@@ -36,7 +40,7 @@ export const ContactList = () => {
 
   return (
     <>
-      {loading && <Loader />}
+      {loading && actionType === 'contacts/fetchAll/pending' && <Loader />}
       {error && (
         <ErrorMesage>oops, something went wrong, change the side.</ErrorMesage>
       )}
@@ -44,15 +48,21 @@ export const ContactList = () => {
         {contacts.length !== 0 &&
           filterContacts().map(item => (
             <ContactListItem key={item.id}>
-              {item.name}: {item.phone}
-              <DeleteBtn
-                type="button"
-                onClick={() => {
-                  dispatch(deleteContact(item.id));
-                }}
-              >
-                Delete
-              </DeleteBtn>
+              <ContactListItemContext>
+                {item.name}: {item.phone}
+              </ContactListItemContext>
+              {loading && actionType === 'contacts/deleteContact/pending' ? (
+                <LoaderFromButtonDelete />
+              ) : (
+                <DeleteBtn
+                  type="button"
+                  onClick={() => {
+                    dispatch(deleteContact(item.id));
+                  }}
+                >
+                  Delete
+                </DeleteBtn>
+              )}
             </ContactListItem>
           ))}
       </ContactListSection>

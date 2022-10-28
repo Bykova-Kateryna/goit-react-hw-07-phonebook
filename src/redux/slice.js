@@ -1,13 +1,15 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { fetchContacts, addContact, deleteContact } from './operations';
-
-const statusPending = state => {
+import { Notify } from 'notiflix/build/notiflix-notify-aio';
+const statusPending = (state, action) => {
   state.isLoading = true;
+  state.actionTypeStatus = action.type;
 };
 
 const statusRejected = (state, action) => {
   state.isLoading = false;
   state.error = action.payload;
+  state.actionTypeStatus = false;
 };
 
 export const phonebookSlice = createSlice({
@@ -16,6 +18,7 @@ export const phonebookSlice = createSlice({
     items: [],
     isLoading: false,
     error: null,
+    actionTypeStatus: null,
   },
   extraReducers: {
     [fetchContacts.pending]: statusPending,
@@ -23,6 +26,7 @@ export const phonebookSlice = createSlice({
       store.isLoading = false;
       store.error = null;
       store.items = action.payload;
+      store.actionTypeStatus = false;
     },
     [fetchContacts.rejected]: statusRejected,
     [addContact.pending]: statusPending,
@@ -30,6 +34,8 @@ export const phonebookSlice = createSlice({
       store.isLoading = false;
       store.error = null;
       store.items.push(action.payload);
+      store.actionTypeStatus = false;
+      Notify.success('Contact successfully added!');
     },
     [addContact.rejected]: statusRejected,
     [deleteContact.pending]: statusPending,
@@ -37,6 +43,8 @@ export const phonebookSlice = createSlice({
       store.isLoading = false;
       store.error = null;
       store.items = store.items.filter(item => item.id !== action.payload.id);
+      store.actionTypeStatus = false;
+      Notify.failure('Contact successfully deleted!');
     },
     [deleteContact.rejected]: statusRejected,
   },
@@ -57,3 +65,5 @@ const filtersSlice = createSlice({
 export const phoneBookReducer = phonebookSlice.reducer;
 export const { filterContact } = filtersSlice.actions;
 export const filtersReducer = filtersSlice.reducer;
+
+export const actions = phonebookSlice.actions;

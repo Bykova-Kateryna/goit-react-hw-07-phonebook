@@ -10,10 +10,13 @@ import {
   FormInput,
   FormBtn,
 } from './ContactForm.stysed';
+import { LoaderFromButtonAdd } from '../Loader/LoaderFromButtonAdd';
 
 function PhoneBookForm() {
   const dispatch = useDispatch();
   const contacts = useSelector(state => state.phonebook.items);
+  const loading = useSelector(state => state.phonebook.isLoading);
+  const actionType = useSelector(state => state.phonebook.actionTypeStatus);
 
   const contactNameId = nanoid();
   const contactTellId = nanoid();
@@ -70,7 +73,11 @@ function PhoneBookForm() {
             id={contactTellId}
           />
         </div>
-        <FormBtn type="submit">Add contact</FormBtn>
+        {loading && actionType === 'contacts/addContact/pending' ? (
+          <LoaderFromButtonAdd />
+        ) : (
+          <FormBtn type="submit">Add contact</FormBtn>
+        )}
       </Fofm>
     </ContactFofmSection>
   );

@@ -13,10 +13,14 @@ export const ContactListSection = styled.ol`
 
 export const ContactListItem = styled.li`
   margin-top: 15px;
+  display: flex;
+`;
+
+export const ContactListItemContext = styled.p`
+  margin-right: 15px;
 `;
 
 export const DeleteBtn = styled.button`
-  margin-left: 15px;
   cursor: pointer;
   border-radius: 5px;
   &:hover,
