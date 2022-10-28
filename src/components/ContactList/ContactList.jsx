@@ -1,6 +1,6 @@
 import { useSelector, useDispatch } from 'react-redux';
 import { deleteContact } from '../../redux/operations';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import {
   ContactListSection,
   ContactListItem,
@@ -13,16 +13,18 @@ import { Loader } from '../Loader/Loader';
 import { LoaderFromButtonDelete } from '../Loader/LoaderFromButtonDelete';
 
 export const ContactList = () => {
+  const [onClick, setOnClick] = useState(false);
   const contacts = useSelector(state => state.phonebook.items);
   const loading = useSelector(state => state.phonebook.isLoading);
   const error = useSelector(state => state.phonebook.error);
   const filter = useSelector(state => state.filter);
   const dispatch = useDispatch();
+
   useEffect(() => {
     dispatch(fetchContacts());
   }, [dispatch]);
+
   const actionType = useSelector(state => state.phonebook.actionTypeStatus);
-  console.log(actionType);
 
   const filterContacts = () => {
     if (!filter) {
@@ -51,13 +53,17 @@ export const ContactList = () => {
               <ContactListItemContext>
                 {item.name}: {item.phone}
               </ContactListItemContext>
-              {loading && actionType === 'contacts/deleteContact/pending' ? (
+              {loading &&
+              actionType === 'contacts/deleteContact/pending' &&
+              onClick &&
+              onClick === item.id ? (
                 <LoaderFromButtonDelete />
               ) : (
                 <DeleteBtn
                   type="button"
                   onClick={() => {
                     dispatch(deleteContact(item.id));
+                    setOnClick(item.id);
                   }}
                 >
                   Delete
